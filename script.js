@@ -23,3 +23,7 @@ function checkResult() {
       document.getElementById('result').innerHTML = 'No match found';
     });
 }
+function formatDob(dob){
+    const [d,m,y]=dob.split('/');
+    return '${y}-${m}-${d}'
+}
