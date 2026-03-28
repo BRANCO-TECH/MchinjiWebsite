@@ -14,23 +14,22 @@
     function checkResult() {
       const form = document.getElementById('form').value;
       const examNo = document.getElementById('examNo').value.trim();
-      const dob = document.getElementById('dob').value.split('-').reverse().join('/'); // convert to dd/mm/yyyy
+      const dob = document.getElementById('dob').value.split('-').reverse().join('/'); // dd/mm/yyyy
       const csvFile = `form${form}.csv`;
 
       fetch(csvFile)
         .then(r => r.text())
         .then(data => {
           const rows = data.split('\n');
+          const headers = rows[1].split(','); // row 2 for headers
           for (let row of rows) {
             const cols = row.split(',');
-            // cols[0]=FORM, cols[1]=EXAM_NO, cols[2]=DOB, cols[3]=NAME
             if (cols[1].trim() === examNo && cols[2].trim() === dob) {
               let html = `<h3>${cols[3]}</h3>`;
               html += `<table border="1">`;
-              for (let i = 0; i < cols.length; i++) {
-                const colName = String.fromCharCode(65 + i); // A, B, C...
-                html += `<tr><th>${colName}</th><td>${cols[i] || ''}</td></tr>`;
-              }
+              headers.forEach((header, i) => {
+                html += `<tr><th>${header}</th><td>${cols[i] || ''}</td></tr>`;
+              });
               html += `</table>`;
               document.getElementById('result').innerHTML = html;
               return;
