@@ -1,61 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Exam Results</title>
-</head>
+<html>
 <body>
   <h1>Check Exam Result</h1>
+  Form: <select id="form"><option value="1">Form 1</option><option value="2">Form 2</option><option value="3">Form 3</option><option value="4">Form 4</option></select><br><br>
   Exam No: <input id="examNo" type="text"><br><br>
   DOB: <input id="dob" type="date"><br><br>
   <button onclick="checkResult()">Check</button>
   <div id="result"></div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      window.checkResult = function() {
-        const examNo = document.getElementById('examNo').value.trim();
-        const dob = document.getElementById('dob').value; // yyyy-mm-dd
+    function checkResult() {
+      const form = document.getElementById('form').value;
+      const examNo = document.getElementById('examNo').value.trim();
+      const dob = document.getElementById('dob').value;
+      const csvFile = 'results.csv';
 
-        fetch('results.csv')
-          .then(response => {
-            if (!response.ok) throw new Error('CSV file not found');
-            return response.text();
-          })
-          .then(data => {
-            const rows = data.split('\n').filter(row => row.trim() !== '');
-            for (let i = 1; i < rows.length; i++) {
-              const row = rows[i].split(',');
-              if (row.length < 6) continue;
-              const csvDob = row[1].trim();
-              if (row[0].trim() === examNo && normalizeDob(csvDob) === dob) {
-                document.getElementById('result').innerHTML = `
-                  Name: ${row[2]}<br>
-                  BIO: ${row[3]}<br>
-                  PHY: ${row[4]}<br>
-                  Chem: ${row[5]}
-                `;
-                return;
-              }
+      fetch(csvFile)
+        .then(r => r.text())
+        .then(data => {
+          const rows = data.split('\n');
+          for (let row of rows) {
+            const cols = row.split(',');
+            // Assuming columns: exam_no(0), dob(1), name(2), ...
+            if (cols[0].trim() === examNo && cols[1].trim() === dob.split('-').reverse().join('/')) {
+              let html = `<h3>${cols[2]}</h3>`;
+              html += `Form: ${form}<br>`;
+              // Add more columns as needed (e.g., grades, subjects)
+              html += `Bio: ${cols[3]}<br>`;
+              html += `Phy: ${cols[4]}<br>`;
+              html += `Chem: ${cols[5]}<br>`;
+              document.getElementById('result').innerHTML = html;
+              return;
             }
-            document.getElementById('result').innerHTML = 'No match found';
-          })
-          .catch(error => {
-            document.getElementById('result').innerHTML = 'Error: ' + error.message;
-            console.error(error);
-          });
-      };
-
-      function normalizeDob(dob) {
-        const parts = dob.split('/');
-        if (parts.length !== 3) return dob;
-        return `${parts[2]}-${String(parts[1]).padStart(2, '0')}-${String(parts[0]).padStart(2, '0')}`;
-      }
-    });
+          }
+          document.getElementById('result').innerHTML = 'No match found';
+        });
+    }
   </script>
 </body>
 </html>
-
 
 
