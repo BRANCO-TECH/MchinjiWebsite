@@ -24,11 +24,11 @@
         if (cols.length < 64) continue;
         if (cols[1]?.trim() === examNo && cols[2]?.trim() === dob) {
           let html = `
-            <div style="width: 600px; margin: auto; border: 1px solid black; padding: 10px; font-size: 12px; position: relative;">
-              <h2>REPORT CARD</h2>
-              <p><strong>Name:</strong> ${cols[9]}</p>
+            <div style="width: 800px; margin: auto; border: 1px solid black; padding: 20px; font-size: 14px; position: relative;">
+              <h2 style="text-align: center;">REPORT CARD</h2>
+              <p><strong>Name:</strong> ${cols[10]}</p>
               <p><strong>Form:</strong> ${cols[0]} <strong>Year:</strong> ${cols[4]}</p>
-              <table border="1" width="100%" style="font-size: 12px; table-layout: fixed; word-wrap: break-word;">
+              <table border="1" width="100%" style="font-size: 14px; table-layout: fixed; word-wrap: break-word;">
                 <tr>
                   <th style="width: 20%;">SUBJECT</th>
                   <th style="width: 20%;">AGGREGATE (%)</th>
@@ -39,7 +39,7 @@
           `;
           const subjects = ['AGRI', 'BIBLE', 'BIO', 'CHE', 'CHI', 'HFC', 'ENG', 'HIS', 'GEO', 'S/LF', 'MAT', 'PHY', 'COM'];
           subjects.forEach((subject, i) => {
-            const colIndex = 10 + (i * 4); // K, O, S, ... for AGGREGATE
+            const colIndex = 11 + (i * 4); // K, O, S, ... for AGGREGATE
             html += `
               <tr>
                 <td>${subject}</td>
@@ -54,7 +54,7 @@
               </table>
               <p><strong>POSITION IN CLASS:</strong> ${cols[62]}</p>
               <p><strong>REMARKS:</strong> ${cols[63]}</p>
-              <div style="position: absolute; bottom: 10px; right: 10px; text-align: right;">
+              <div style="position: absolute; bottom: 20px; right: 20px; text-align: right;">
                 <p><strong>HEADTEACHER:</strong> ${cols[5]}</p>
                 <p><strong>BANK DETAILS FOR FEES PAYMENT:</strong> ${cols[6]}</p>
                 <p><strong>NEXT TERM OPENS ON:</strong> ${cols[7]}</p>
@@ -78,9 +78,5 @@
     }
   </script>
 </body>
-</html>
-
-
-
 
 
