@@ -23,6 +23,7 @@
       for (let row of data.slice(2)) { // skip first two header rows
         const cols = row;
         if (cols.length < 64) continue;
+        console.log('Checking:', cols[1], cols[2]);
         if (cols[1]?.trim() === examNo && cols[2]?.trim() === dob) {
           let html = `
             <div style="width: 600px; margin: auto; border: 1px solid black; padding: 10px;">
@@ -65,6 +66,8 @@
           document.getElementById('result').innerHTML = html;
           found = true;
           return;
+        } else {
+          console.log('No match:', cols[1], examNo, cols[2], dob);
         }
       }
       if (!found) {
@@ -80,6 +83,4 @@
   </script>
 </body>
 </html>
-
-
 
