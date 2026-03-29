@@ -26,6 +26,10 @@
           let html = `
             <div style="width: 800px; margin: auto; border: 1px solid black; padding: 20px; font-size: 14px; position: relative;">
               <h2 style="text-align: center;">REPORT CARD</h2>
+              <div style="position: absolute; top: 20px; right: 20px; text-align: right;">
+                <p><strong>POSITION IN CLASS:</strong> ${cols[62]}</p>
+                <p><strong>REMARKS:</strong> ${cols[63]}</p>
+              </div>
               <p><strong>Name:</strong> ${cols[10]}</p>
               <p><strong>Form:</strong> ${cols[0]} <strong>Year:</strong> ${cols[4]}</p>
               <table border="1" width="100%" style="font-size: 14px; table-layout: fixed; word-wrap: break-word;">
@@ -52,8 +56,6 @@
           });
           html += `
               </table>
-              <p><strong>POSITION IN CLASS:</strong> ${cols[62]}</p>
-              <p><strong>REMARKS:</strong> ${cols[63]}</p>
               <div style="position: absolute; bottom: 20px; right: 20px; text-align: right;">
                 <p><strong>HEADTEACHER:</strong> ${cols[5]}</p>
                 <p><strong>BANK DETAILS FOR FEES PAYMENT:</strong> ${cols[6]}</p>
@@ -78,5 +80,6 @@
     }
   </script>
 </body>
+</html>
 
 
