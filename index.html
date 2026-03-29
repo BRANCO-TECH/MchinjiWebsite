@@ -19,13 +19,11 @@
     async function fillReportCard(csvUrl, examNo, dob) {
       const data = await loadCSV(csvUrl);
       let found = false;
-      for (let row of data.slice(2)) { // skip first two header rows
+      for (let row of data.slice(2)) {
         const cols = row;
         if (cols.length < 64) continue;
         if (cols[1]?.trim() === examNo && cols[2]?.trim() === dob) {
-          console.log('Name value:', cols[9]); // Debug log
-
-          const nameIndex = 9; // Name in column J
+          const nameIndex = 9;
           const formIndex = 0;
           const yearIndex = 4;
           const headTeacherIndex = 5;
@@ -57,22 +55,21 @@
           `;
 
           subjects.forEach((subject, i) => {
-            const baseIndex = 10 + (i * 4); // Subject data starts at K
+            const baseIndex = 10 + (i * 4);
             html += `
               <tr>
                 <td>${subject}</td>
-                <td>${cols[baseIndex]}</td>     <!-- Aggregate -->
-                <td>${cols[baseIndex + 1]}</td> <!-- Grade -->
-                <td>${cols[baseIndex + 2]}</td> <!-- Position -->
-                <td>${cols[baseIndex + 3]}</td> <!-- Remarks -->
+                <td>${cols[baseIndex]}</td>
+                <td>${cols[baseIndex + 1]}</td>
+                <td>${cols[baseIndex + 2]}</td>
+                <td>${cols[baseIndex + 3]}</td>
               </tr>
             `;
           });
 
           html += `
               </table>
-              <br><br> <!-- Add spacing after table -->
-              <div style="margin-top: 20px; font-size: 10px;">
+              <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid black;">
                 <table border="0" style="font-size: 10px;">
                   <tr><td><strong>HEADTEACHER:</strong></td><td>${cols[headTeacherIndex]}</td></tr>
                   <tr><td><strong>BANK DETAILS FOR FEES PAYMENT:</strong></td><td>${cols[bankDetailsIndex]}</td></tr>
@@ -99,6 +96,7 @@
   </script>
 </body>
 </html>
+
 
 
 
