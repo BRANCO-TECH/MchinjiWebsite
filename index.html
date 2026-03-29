@@ -2,50 +2,86 @@
 <!DOCTYPE html>
 <html>
 <body>
+  <div style="width: 600px; margin: auto; border: 1px solid black; padding: 10px;">
+    <h2>CANDIDATE INFORMATION</h2>
+    <p><strong>Name:</strong> <span id="name"></span></p>
+    <p><strong>Form:</strong> <span id="form"></span></p>
+    <table border="1" width="100%">
+      <tr>
+        <th>SUBJECT</th>
+        <th>GRADE</th>
+        <th>POSITION</th>
+        <th>REMARKS</th>
+      </tr>
+      <tr><td>AGRI</td><td id="agriGrade"></td><td id="agriPos"></td><td id="agriRem"></td></tr>
+      <tr><td>BIBLE</td><td id="bibleGrade"></td><td id="biblePos"></td><td id="bibleRem"></td></tr>
+      <tr><td>BIO</td><td id="bioGrade"></td><td id="bioPos"></td><td id="bioRem"></td></tr>
+      <tr><td>CHE</td><td id="cheGrade"></td><td id="chePos"></td><td id="cheRem"></td></tr>
+      <tr><td>CHI</td><td id="chiGrade"></td><td id="chiPos"></td><td id="chiRem"></td></tr>
+      <tr><td>HFC</td><td id="hfcGrade"></td><td id="hfcPos"></td><td id="hfcRem"></td></tr>
+      <tr><td>ENG</td><td id="engGrade"></td><td id="engPos"></td><td id="engRem"></td></tr>
+      <tr><td>HIS</td><td id="hisGrade"></td><td id="hisPos"></td><td id="hisRem"></td></tr>
+      <tr><td>GEO</td><td id="geoGrade"></td><td id="geoPos"></td><td id="geoRem"></td></tr>
+      <tr><td>S/LF</td><td id="slfGrade"></td><td id="slfPos"></td><td id="slfRem"></td></tr>
+      <tr><td>MAT</td><td id="matGrade"></td><td id="matPos"></td><td id="matRem"></td></tr>
+      <tr><td>PHY</td><td id="phyGrade"></td><td id="phyPos"></td><td id="phyRem"></td></tr>
+      <tr><td>COM</td><td id="comGrade"></td><td id="comPos"></td><td id="comRem"></td></tr>
+    </table>
+    <p><strong>POSITION IN CLASS:</strong> <span id="classPos"></span></p>
+    <p><strong>REMARKS:</strong> <span id="remarks"></span></p>
+  </div>
+
+  <script>
+    // Fetch and parse CSV
+    async function loadCSV(url) {
+      const response = await fetch(url);
+      const text = await response.text();
+      const rows = text.split('\n').map(row => row.split(','));
+      return rows;
+    }
+
+    // Populate the report card with CSV data
+    async function fillReportCard(csvUrl, examNo, dob) {
+      const data = await loadCSV(csvUrl);
+      const headers = data[1]; // column names
+      let found = false;
+      for (let row of data.slice(2)) { // skip header rows
+        const cols = row;
+        if (cols.length < 58) continue; // skip invalid rows
+        // Check cols[1] & cols[2] safely
+        if (cols[1]?.trim() === examNo && cols[2]?.trim() === dob) {
+          document.getElementById('name').textContent = cols[3];
+          document.getElementById('form').textContent = '1';
+
+          const subjects = ['AGRI', 'BIBLE', 'BIO', 'CHE', 'CHI', 'HFC', 'ENG', 'HIS', 'GEO', 'S/LF', 'MAT', 'PHY', 'COM'];
+          subjects.forEach((subject, i) => {
+            const idx = i + 4;
+            document.getElementById(`${subject.toLowerCase().replace('/', '')}Grade`).textContent = cols[idx];
+            document.getElementById(`${subject.toLowerCase().replace('/', '')}Pos`).textContent = cols[idx + 13];
+            document.getElementById(`${subject.toLowerCase().replace('/', '')}Rem`).textContent = cols[idx + 26];
+          });
+          found = true;
+          return;
+        }
+      }
+      if (!found) {
+        alert('No matching record found');
+      }
+    }
+
+    function checkResult() {
+      const examNo = document.getElementById('examNo').value.trim();
+      const dob = document.getElementById('dob').value.split('-').reverse().join('/'); // dd/mm/yyyy
+      fillReportCard('form1.csv', examNo, dob);
+    }
+  </script>
+
   <h1>Check Exam Result</h1>
   Form: <select id="form"><option value="1">Form 1</option></select><br><br>
   Exam No: <input id="examNo" type="text"><br><br>
   DOB: <input id="dob" type="date"><br><br>
   <button onclick="checkResult()">Check</button>
-  <div id="result"></div>
-
-  <script>
-    function checkResult() {
-      const form = document.getElementById('form').value;
-      const examNo = document.getElementById('examNo').value.trim();
-      const dob = document.getElementById('dob').value.split('-').reverse().join('/'); // dd/mm/yyyy
-      const csvFile = `form${form}.csv`;
-
-      fetch(csvFile)
-        .then(r => r.text())
-        .then(data => {
-          const rows = data.split('\n').filter(r => r); // remove empty rows
-          if (rows.length < 2) {
-            document.getElementById('result').innerHTML = 'CSV file has insufficient rows';
-            return;
-          }
-          const headers = rows[1].split(',').slice(4, 58); // row 2, cols E–BF
-          for (let row of rows.slice(2)) { // skip header rows
-            const cols = row.split(',');
-            if (cols.length < 58) continue; // skip invalid rows
-            if (cols[1] && cols[2] && cols[1].trim() === examNo && cols[2].trim() === dob) {
-              let html = `<h3>${cols[3]}</h3>`;
-              html += `<table border="1">`;
-              headers.forEach((header, i) => {
-                html += `<tr><th>${header}</th><td>${cols[i + 4] || ''}</td></tr>`;
-              });
-              html += `</table>`;
-              document.getElementById('result').innerHTML = html;
-              return;
-            }
-          }
-          document.getElementById('result').innerHTML = 'No match found';
-        })
-        .catch(err => {
-          document.getElementById('result').innerHTML = 'Error: ' + err.message;
-        });
-    }
-  </script>
 </body>
 </html>
+
 
