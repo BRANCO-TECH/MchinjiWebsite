@@ -1,24 +1,53 @@
+
 <!DOCTYPE html>
 <html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @media (max-width: 600px) {
+      body { font-size: 12px; }
+      h2 { font-size: 16px; }
+      table { font-size: 11px; }
+    }
+    .card {
+      max-width: 800px;
+      width: 100%;
+      margin: auto;
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
 <body>
-  <p style="color: forestgreen; font-size: 30px;">Welcome to Mchinji sec school web portal. </p>
-  Form: <select id="form">
-    <option value="1">Form 1</option>
-    <option value="2">Form 2</option>
-    <option value="3">Form 3</option>
-    <option value="4">Form 4</option>
-  </select><br><br>
-  Exam No: <input id="examNo" type="text"><br><br>
-  DOB: <input id="dob" type="date"><br><br>
-  <button onclick="checkResult()">Check</button>
+  <div class="card">
+    <h1>Check Exam Result</h1>
+    Form: <select id="form">
+      <option value="1">Form 1</option>
+      <option value="2">Form 2</option>
+      <option value="3">Form 3</option>
+      <option value="4">Form 4</option>
+    </select><br><br>
+    Exam No: <input id="examNo" type="text"><br><br>
+    DOB: <input id="dob" type="date"><br><br>
+    <button onclick="checkResult()">Check</button>
+  </div>
   <div id="result"></div>
 
   <script>
     async function loadCSV(url) {
-      const response = await fetch(url);
-      const text = await response.text();
-      const rows = text.split('\n').map(row => row.split(','));
-      return rows;
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Failed to load ${url}`);
+        const text = await response.text();
+        return text.split('\n').map(row => row.split(','));
+      } catch (e) {
+        console.error(e);
+        document.getElementById('result').innerHTML = `Error: ${e.message}`;
+        return [];
+      }
     }
 
     async function fillReportCard(form, examNo, dob) {
@@ -31,63 +60,50 @@
         if (cols[1]?.trim() === examNo.trim() && cols[2]?.trim() === dob) {
           const nameIndex = 9;
           const formIndex = 0;
-          const termIndex = 3;  // Column D for Term
+          const termIndex = 3;
           const yearIndex = 4;
           const headTeacherIndex = 5;
           const bankDetailsIndex = 6;
           const nextTermIndex = 7;
           const positionIndex = 62;
           const remarksIndex = 63;
-
           const subjects = ['AGRI', 'BIBLE', 'BIO', 'CHE', 'CHI', 'HFC', 'ENG', 'HIS', 'GEO', 'S/LF', 'MAT', 'PHY', 'COM'];
           let html = `
-            <div style="width: 800px; margin: auto; border: 1px solid black; padding: 20px; font-size: 14px; position: relative;">
-              <div style="text-align: center; margin-bottom: 10px;">
-                <h2 style="font-size: 18px; margin: 0;">REPORT CARD</h2>
-                <p style="font-size: 15Spx; margin: 0;">MCHINJI SECONDARY SCHOOL</p>
+            <div class="card">
+              <div style="text-align: center;">
+                <h2>REPORT CARD</h2>
+                <p>MCHINJI SECONDARY SCHOOL</p>
               </div>
-              <div style="margin-bottom: 10px;">
-                <p><strong>Name:</strong> ${cols[nameIndex]}</p>
-                <p>
-                  <strong>Form:</strong> ${cols[formIndex]} 
-                  <strong>Term:</strong> ${cols[termIndex] || 'N/A'} 
-                  <strong>Year:</strong> ${cols[yearIndex]}
-                </p>
+              <p><strong>Name:</strong> ${cols[nameIndex]}</p>
+              <p><strong>Form:</strong> ${cols[formIndex]} <strong>Term:</strong> ${cols[termIndex]} <strong>Year:</strong> ${cols[yearIndex]}</p>
+              <p><strong>POSITION IN CLASS:</strong> ${cols[positionIndex]}</p>
+              <p><strong>REMARKS:</strong> ${cols[remarksIndex]}</p>
+              <div style="overflow-x: auto;">
+                <table border="1" width="100%" style="font-size: 14px; table-layout: auto;">
+                  <tr>
+                    <th>SUBJECT</th>
+                    <th>AGGREGATE (%)</th>
+                    <th>GRADE</th>
+                    <th>POSITION</th>
+                    <th>REMARKS</th>
+                  </tr>
+                  ${subjects.map((subject, i) => {
+                    const baseIndex = 10 + (i * 4);
+                    return `
+                      <tr>
+                        <td>${subject}</td>
+                        <td>${cols[baseIndex]}</td>
+                        <td>${cols[baseIndex + 1]}</td>
+                        <td>${cols[baseIndex + 2]}</td>
+                        <td>${cols[baseIndex + 3]}</td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </table>
               </div>
-              <div style="position: absolute; top: 60px; right: 20px; text-align: right;">
-                <p><strong>POSITION IN CLASS:</strong> ${cols[positionIndex]}</p>
-                <p><strong>REMARKS:</strong> ${cols[remarksIndex]}</p>
-              </div>
-              <table border="1" width="100%" style="font-size: 14px; table-layout: fixed; word-wrap: break-word;">
-                <tr>
-                  <th style="width: 20%;">SUBJECT</th>
-                  <th style="width: 20%;">AGGREGATE (%)</th>
-                  <th style="width: 15%;">GRADE</th>
-                  <th style="width: 15%;">POSITION</th>
-                  <th style="width: 30%;">REMARKS</th>
-                </tr>
-          `;
-
-          subjects.forEach((subject, i) => {
-            const baseIndex = 10 + (i * 4);
-            html += `
-              <tr>
-                <td>${subject}</td>
-                <td>${cols[baseIndex]}</td>
-                <td>${cols[baseIndex + 1]}</td>
-                <td>${cols[baseIndex + 2]}</td>
-                <td>${cols[baseIndex + 3]}</td>
-              </tr>
-            `;
-          });
-
-          html += `
-              </table>
-              <div style="padding-top: 5px; border-top: 1px solid black; font-size: 12px;">
-                <p><strong>HEADTEACHER:</strong> ${cols[headTeacherIndex]}</p>
-                <p><strong>BANK DETAILS FOR FEES PAYMENT:</strong> ${cols[bankDetailsIndex]}</p>
-                <p><strong>NEXT TERM OPENS ON:</strong> ${cols[nextTermIndex]}</p>
-              </div>
+              <p><strong>HEADTEACHER:</strong> ${cols[headTeacherIndex]}</p>
+              <p><strong>BANK DETAILS:</strong> ${cols[bankDetailsIndex]}</p>
+              <p><strong>NEXT TERM:</strong> ${cols[nextTermIndex]}</p>
             </div>
           `;
           document.getElementById('result').innerHTML = html;
@@ -95,15 +111,13 @@
           return;
         }
       }
-      if (!found) {
-        document.getElementById('result').innerHTML = 'No matching record found';
-      }
+      if (!found) document.getElementById('result').innerHTML = '<div class="card">No matching record found</div>';
     }
 
     function checkResult() {
       const form = document.getElementById('form').value;
       const examNo = document.getElementById('examNo').value.trim();
-      const dob = document.getElementById('dob').value.split('-').reverse().join('/'); // dd/mm/yyyy
+      const dob = document.getElementById('dob').value.split('-').reverse().join('/');
       fillReportCard(form, examNo, dob);
     }
   </script>
