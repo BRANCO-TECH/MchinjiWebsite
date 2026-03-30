@@ -21,7 +21,7 @@
   Exam No: <input id="examNo" type="text"><br><br>
   DOB: <input id="dob" type="date"><br><br>
   <button onclick="checkResult()">Check</button>
-  <div id="result"></div>
+  <div id="result" style="overflow-y: auto; max-height: 80vh;"></div>
 
   <script>
     async function loadCSV(url) {
@@ -110,5 +110,4 @@
   </script>
 </body>
 </html>
-
 
