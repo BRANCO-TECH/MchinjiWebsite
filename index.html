@@ -19,12 +19,13 @@
       margin-bottom: 20px;
     }
     table {
+      font-size: 10PX;
       width: 100%;
       border-collapse: collapse;
     }
     th, td {
-      padding: 5px;
-      font-size: 12px;
+      padding: 2px;
+      text-align: center;
     }
   </style>
 </head>
@@ -89,10 +90,10 @@
                 <table border="1">
                   <tr>
                     <th>SUBJECT</th>
-                    <th>AGG (%)</th>
-                    <th>G</th>
-                    <th>POS</th>
-                    <th>REM</th>
+                    <th>AGGREGATE (%)</th>
+                    <th>GRADE</th>
+                    <th>POSITION</th>
+                    <th>REMARKS</th>
                   </tr>
                   ${subjects.map((subject, i) => {
                     const baseIndex = 10 + (i * 4);
@@ -109,8 +110,8 @@
                 </table>
               </div>
               <p><strong>HEADTEACHER:</strong> ${cols[headTeacherIndex]}</p>
-              <p><strong>BANK DETAILS:</strong> ${cols[bankDetailsIndex]}</p>
-              <p><strong>NEXT TERM:</strong> ${cols[nextTermIndex]}</p>
+              <p><strong>BANK DETAILS FOR FEES PAYMENT:</strong> ${cols[bankDetailsIndex]}</p>
+              <p><strong>NEXT TERM OPENS ON:</strong> ${cols[nextTermIndex]}</p>
             </div>
           `;
           document.getElementById('result').innerHTML = html;
