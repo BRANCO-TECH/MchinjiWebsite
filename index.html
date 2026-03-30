@@ -13,7 +13,6 @@
   <button onclick="checkResult()">Check</button>
   <div id="result"></div>
 
-  <script src="https:                                                                        
   <script>
     async function loadCSV(url) {
       const response = await fetch(url);
@@ -32,7 +31,7 @@
         if (cols[1]?.trim() === examNo.trim() && cols[2]?.trim() === dob) {
           const nameIndex = 9;
           const formIndex = 0;
-          const termIndex = 3;                      
+          const termIndex = 3;  // Column D for Term
           const yearIndex = 4;
           const headTeacherIndex = 5;
           const bankDetailsIndex = 6;
@@ -41,41 +40,57 @@
           const remarksIndex = 63;
 
           const subjects = ['AGRI', 'BIBLE', 'BIO', 'CHE', 'CHI', 'HFC', 'ENG', 'HIS', 'GEO', 'S/LF', 'MAT', 'PHY', 'COM'];
-          const { jsPDF } = window.jspdf;
-          const doc = new jsPDF();
+          let html = `
+            <div style="width: 800px; margin: auto; border: 1px solid black; padding: 20px; font-size: 14px; position: relative;">
+              <div style="text-align: center; margin-bottom: 10px;">
+                <h2 style="font-size: 24px; margin: 0;">REPORT CARD</h2>
+                <p style="font-size: 18px; margin: 0;">MCHINJI SECONDARY SCHOOL</p>
+              </div>
+              <div style="margin-bottom: 10px;">
+                <p><strong>Name:</strong> ${cols[nameIndex]}</p>
+                <p>
+                  <strong>Form:</strong> ${cols[formIndex]} 
+                  <strong>Term:</strong> ${cols[termIndex] || 'N/A'} 
+                  <strong>Year:</strong> ${cols[yearIndex]}
+                </p>
+              </div>
+              <div style="position: absolute; top: 60px; right: 20px; text-align: right;">
+                <p><strong>POSITION IN CLASS:</strong> ${cols[positionIndex]}</p>
+                <p><strong>REMARKS:</strong> ${cols[remarksIndex]}</p>
+              </div>
+              <table border="1" width="100%" style="font-size: 14px; table-layout: fixed; word-wrap: break-word;">
+                <tr>
+                  <th style="width: 20%;">SUBJECT</th>
+                  <th style="width: 20%;">AGGREGATE (%)</th>
+                  <th style="width: 15%;">GRADE</th>
+                  <th style="width: 15%;">POSITION</th>
+                  <th style="width: 30%;">REMARKS</th>
+                </tr>
+          `;
 
-          doc.setFontSize(18);
-          doc.text("REPORT CARD", 105, 15, { align: "center" });
-          doc.setFontSize(14);
-          doc.text("MCHINJI SECONDARY SCHOOL", 105, 25, { align: "center" });
-
-          doc.setFontSize(12);
-          doc.text(`Name: ${cols[nameIndex]}`, 10, 40);
-          doc.text(`Form: ${cols[formIndex]}   Term: ${cols[termIndex] || 'N/A'}   Year: ${cols[yearIndex]}`, 10, 50);
-          doc.text(`Position in Class: ${cols[positionIndex]}   Remarks: ${cols[remarksIndex]}`, 10, 60);
-
-          let y = 70;
-          doc.text("SUBJECT | AGGREGATE (%) | GRADE | POSITION | REMARKS", 10, y);
-          y += 10;
           subjects.forEach((subject, i) => {
             const baseIndex = 10 + (i * 4);
-            doc.text(`${subject} | ${cols[baseIndex]} | ${cols[baseIndex + 1]} | ${cols[baseIndex + 2]} | ${cols[baseIndex + 3]}`, 10, y);
-            y += 10;
+            html += `
+              <tr>
+                <td>${subject}</td>
+                <td>${cols[baseIndex]}</td>
+                <td>${cols[baseIndex + 1]}</td>
+                <td>${cols[baseIndex + 2]}</td>
+                <td>${cols[baseIndex + 3]}</td>
+              </tr>
+            `;
           });
 
-          y += 10;
-          doc.text(`Headteacher: ${cols[headTeacherIndex]}`, 10, y);
-          y += 10;
-          doc.text(`Bank Details: ${cols[bankDetailsIndex]}`, 10, y);
-          y += 10;
-          doc.text(`Next Term Opens: ${cols[nextTermIndex]}`, 10, y);
-
-          const blob = doc.output('blob');
-          const link = document.createElement('a');
-          link.href = URL.createObjectURL(blob);
-          link.download = 'report-card.pdf';
-          link.click();
-
+          html += `
+              </table>
+              <div style="padding-top: 5px; border-top: 1px solid black; font-size: 12px;">
+                <p><strong>HEADTEACHER:</strong> ${cols[headTeacherIndex]}</p>
+                <p><strong>BANK DETAILS FOR FEES PAYMENT:</strong> ${cols[bankDetailsIndex]}</p>
+                <p><strong>NEXT TERM OPENS ON:</strong> ${cols[nextTermIndex]}</p>
+              </div>
+            </div>
+          `;
+          document.getElementById('result').innerHTML = html;
           found = true;
           return;
         }
@@ -94,12 +109,6 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
 
 
 
