@@ -1,5 +1,29 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <script src="https:                                                                        
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid      
+      padding: 8px;
+      text-align: center;
+    }
+    @media (max-width: 600px) {
+      table {
+        font-size: 12px;
+      }
+      th, td {
+        padding: 4px;
+      }
+    }
+  </style>
+</head>
 <body>
   <h1>Check Exam Result</h1>
   Form: <select id="form">
@@ -10,68 +34,55 @@
   </select><br><br>
   Exam No: <input id="examNo" type="text"><br><br>
   DOB: <input id="dob" type="date"><br><br>
-  <button onclick="checkResult()">Check</button>
+  <button id="checkBtn">Check</button>
   <div id="result"></div>
 
-  <script src="https:                                                                        
   <script>
     async function loadCSV(url) {
-      const response = await fetch(url);
-      const text = await response.text();
-      const rows = text.split('\n').map(row => row.split(','));
-      return rows;
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Failed to load ${url}: ${response.status}`);
+        const text = await response.text();
+        return text.split('\n').map(row => row.split(','));
+      } catch (e) {
+        console.error(e);
+        document.getElementById('result').innerHTML = `Error loading CSV: ${e.message}`;
+        return [];
+      }
     }
 
     async function fillReportCard(form, examNo, dob) {
       const csvUrl = `form${form}.csv`;
       const data = await loadCSV(csvUrl);
+      if (data.length < 3) {
+        document.getElementById('result').innerHTML = 'CSV file has insufficient data';
+        return;
+      }
       let found = false;
       for (let row of data.slice(2)) {
+        if (row.length < 64) continue;
         const cols = row;
-        if (cols.length < 64) continue;
-        if (cols[1]?.trim() === examNo.trim() && cols[2]?.trim() === dob) {
-          const nameIndex = 9;
-          const formIndex = 0;
-          const termIndex = 3;                      
-          const yearIndex = 4;
-          const headTeacherIndex = 5;
-          const bankDetailsIndex = 6;
-          const nextTermIndex = 7;
-          const positionIndex = 62;
-          const remarksIndex = 63;
-
-          const subjects = ['AGRI', 'BIBLE', 'BIO', 'CHE', 'CHI', 'HFC', 'ENG', 'HIS', 'GEO', 'S/LF', 'MAT', 'PHY', 'COM'];
-          const { jsPDF } = window.jspdf;
-          const doc = new jsPDF();
-
-          doc.setFontSize(18);
-          doc.text("REPORT CARD", 105, 15, { align: "center" });
-          doc.setFontSize(14);
-          doc.text("MCHINJI SECONDARY SCHOOL", 105, 25, { align: "center" });
-
-          doc.setFontSize(12);
-          doc.text(`Name: ${cols[nameIndex]}`, 10, 40);
-          doc.text(`Form: ${cols[formIndex]}   Term: ${cols[termIndex] || 'N/A'}   Year: ${cols[yearIndex]}`, 10, 50);
-          doc.text(`Position in Class: ${cols[positionIndex]}   Remarks: ${cols[remarksIndex]}`, 10, 60);
-
-          let y = 70;
-          doc.text("SUBJECT | AGGREGATE (%) | GRADE | POSITION | REMARKS", 10, y);
-          y += 10;
-          subjects.forEach((subject, i) => {
-            const baseIndex = 10 + (i * 4);
-            doc.text(`${subject} | ${cols[baseIndex]} | ${cols[baseIndex + 1]} | ${cols[baseIndex + 2]} | ${cols[baseIndex + 3]}`, 10, y);
-            y += 10;
-          });
-
-          y += 10;
-          doc.text(`Headteacher: ${cols[headTeacherIndex]}`, 10, y);
-          y += 10;
-          doc.text(`Bank Details: ${cols[bankDetailsIndex]}`, 10, y);
-          y += 10;
-          doc.text(`Next Term Opens: ${cols[nextTermIndex]}`, 10, y);
-
-          doc.save("report-card.pdf");
+        if (cols[1]?.trim() === examNo && cols[2]?.trim() === dob) {
           found = true;
+          document.getElementById('result').innerHTML = `
+            <h2>REPORT CARD</h2>
+            <p><strong>Name:</strong> ${cols[9]}</p>
+            <p><strong>Form:</strong> ${form} Term: 2 Year: 2026</p>
+            <table>
+              <tr>
+                <th>SUBJECT</th>
+                <th>AGGREGATE (%)</th>
+                <th>GRADE</th>
+                <th>POSITION</th>
+                <th>REMARKS</th>
+              </tr>
+              <tr>
+                <td>AGRI</td><td>${cols[10]}</td><td>${cols[11]}</td><td>${cols[12]}</td><td>Fail</td>
+              </tr>
+              <!-- Add other subjects dynamically -->
+            </table>
+            <p><strong>HEADTEACHER:</strong> MR.J LUHANA | CELL: 0999441723</p>
+          `;
           return;
         }
       }
@@ -86,9 +97,14 @@
       const dob = document.getElementById('dob').value.split('-').reverse().join('/'); // dd/mm/yyyy
       fillReportCard(form, examNo, dob);
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('checkBtn').addEventListener('click', checkResult);
+    });
   </script>
 </body>
 </html>
+
 
 
 
