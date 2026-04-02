@@ -22,5 +22,5 @@ jobs:
           destination_repo: BRANCO-TECH/Mchinji-Secondary-Web-Portal
           destination_branch: main
           target_dir: .
-          github_token: ${{ secrets.workflowdeploy }}
+          github_token: ${{ gitToken }}
 
