@@ -9,21 +9,20 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
 
       - name: Build project
         run: |
-          # Add your build commands here (e.g., npm run build)
+          # your build commands here
 
       - name: Push to another repo
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.SSH_DEPLOY_KEY }}  # or use SSH_KEY
-          ssh: true
           ssh_key: ${{ secrets.SSH_DEPLOY_KEY }}
-          source: 'build/'
-          destination: 'git@github.com:BRANCO-TECH/Mchinji-Secondary-Web-Portal.git'
-          branch: 'main'
-          commit_message: 'Deploy build to public repo'
-
+          ssh: true
+          source: .
+          destination: git@github.com:BRANCO-TECH/Mchinji-Secondary-Web-Portal.git
+          branch: main
+          commit_message: 'Deploy build'
+          force: false
 
