@@ -1,0 +1,28 @@
+name: Deploy to public repo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build project
+        run: |
+          # Add your build commands here (e.g., npm run build)
+
+      - name: Push to public repo
+        uses: cpina/github-action-push-to-another-repository@1.4.0
+        with:
+          source_dir: 'build'
+          destination_git_username: 'BRANCO-TECH'
+          destination_git_email: 'mwaleb075@gmail.com'
+          destination_repo: 'BRANCO-TECH/Mchinji-Secondary-Web-Portal'
+          destination_branch: 'main'
+          github_token: ${{ secrets.SSH_DEPLOY_KEY }}
+
+
