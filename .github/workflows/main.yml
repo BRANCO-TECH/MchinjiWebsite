@@ -16,7 +16,7 @@ jobs:
           # Add your build commands here (e.g., npm run build)
 
       - name: Push to public repo
-        uses: cpina/github-action-push-to-another-repository@1.1
+        uses: cpina/github-action-push-to-another-repository@v1.0
         with:
           source_dir: 'build'
           destination_git_username: 'BRANCO-TECH'
