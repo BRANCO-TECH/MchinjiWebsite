@@ -19,8 +19,8 @@ jobs:
         uses: cpina/github-action-push-to-another-repository@v1.2
         with:
           source-dir: 'build'
-          destination-git_username: 'BRANCO-TECH'
-          destination_git_email: 'mwaleb075@gmail.com'
+          destination-git-username: 'BRANCO-TECH'
+          destination-git-email: 'mwaleb075@gmail.com'
           destination-repo: 'BRANCO-TECH/Mchinji-Secondary-Web-Portal'
           destination-branch: 'main'
           ssh_key: ${{ secrets.SSH_DEPLOY_KEY }}
