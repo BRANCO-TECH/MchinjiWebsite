@@ -20,6 +20,6 @@ jobs:
           destination_repository_name: BRANCO-TECH/Mchinji-Secondary-Web-Portal
           destination_branch: main
           target_dir: .
-          github_token: ${{ secrets.MchinjiDeployToken }}
+          github_token: ${{ secrets.API_TOKEN_GITHUB  }}
 
 
