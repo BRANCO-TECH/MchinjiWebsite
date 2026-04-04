@@ -1,46 +1,3 @@
-const script = document.createElement('script');
-script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js';
-document.head.appendChild(script);
-
-let currentFormType = '';
-
-document.addEventListener('DOMContentLoaded', () => {
-  const daySchoolBtn = document.getElementById('daySchoolBtn');
-  const odlBtn = document.getElementById('odlBtn');
-  const checkResultBtn = document.getElementById('checkResultBtn');
-  
-  if (daySchoolBtn && odlBtn && checkResultBtn) {
-    daySchoolBtn.addEventListener('click', showDaySchoolOptions);
-    odlBtn.addEventListener('click', showODLOptions);
-    checkResultBtn.addEventListener('click', checkResult);
-  }
-});
-
-function showDaySchoolOptions() {
-  currentFormType = 'Day';
-  const options = ['Form1', 'Form2', 'Form3', 'Form4'];
-  populateOptions(options);
-}
-
-function showODLOptions() {
-  currentFormType = 'ODL';
-  const options = ['Form1ODL', 'Form2ODL', 'Form3ODL', 'Form4ODL'];
-  populateOptions(options);
-}
-
-function populateOptions(options) {
-  document.getElementById('options').style.display = 'block';
-  const select = document.getElementById('form');
-  select.innerHTML = '<option value="" disabled selected>-- Choose Form --</option>';
-  
-  options.forEach(option => {
-    const opt = document.createElement('option');
-    opt.value = option;
-    opt.text = option.replace('ODL', ' ODL');
-    select.add(opt);
-  });
-}
-
 async function loadCSV(url) {
   try {
     const response = await fetch(url);
@@ -63,7 +20,8 @@ async function loadCSV(url) {
     return data;
   } catch (e) {
     console.error(e);
-    document.getElementById('result').innerHTML = `<div class="card">Error loading data: ${e.message}</div>`;
+    // CHANGED: Removed <div class="card"> from error message so it doesn't get a green border
+    document.getElementById('result').innerHTML = `<p style="color:red; text-align:center;">Error loading data: ${e.message}</p>`;
     return [];
   }
 }
@@ -92,10 +50,9 @@ async function fillReportCard(form, examNo, password) {
       const schoolName = form.includes('ODL') ? 'MCHINJI SECONDARY SCHOOL ODL' : 'MCHINJI SECONDARY SCHOOL';
       
       let html = `
-        <h2>Your examination results</h2>
+        <h2 style="text-align:center;">Your examination results</h2>
         
-        <!-- ADDED BORDER AND PADDING HERE -->
-        <div class="report-card-inner" style="border: 1px solid #000; padding: 15px; margin-bottom: 10px;">
+        <div class="report-card-inner">
           <div style="text-align: center;">
             <h2 style="margin-top: 0;">REPORT CARD</h2>
             <p><strong>${schoolName}</strong></p>
@@ -161,19 +118,7 @@ async function fillReportCard(form, examNo, password) {
   }
   
   if (!found) {
-    document.getElementById('result').innerHTML = '<div class="card" style="color:red;">No matching record found or incorrect password</div>';
+    // CHANGED: Removed <div class="card"> from error message
+    document.getElementById('result').innerHTML = '<p style="color:red; text-align:center;">No matching record found or incorrect password</p>';
   }
-}
-
-function checkResult() {
-  const form = document.getElementById('form').value;
-  const examNo = document.getElementById('examNo').value.trim();
-  const password = document.getElementById('password').value.trim();
-  
-  if(!form || !examNo || !password) {
-    alert("Please fill in all fields.");
-    return;
-  }
-  
-  fillReportCard(form, examNo, password);
 }
