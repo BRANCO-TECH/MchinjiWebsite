@@ -75,7 +75,9 @@ async function fillReportCard(form, examNo, password) {
   
   for (let row of data.slice(2)) {
     const cols = row;
-    if (cols.length < 64) continue;
+    
+    // Updated to 65 to ensure column BM (index 64) exists
+    if (cols.length < 65) continue;
     
     if (cols[1]?.trim() === examNo.trim() && password === "123456") {
       const nameIndex = 9;
@@ -87,6 +89,15 @@ async function fillReportCard(form, examNo, password) {
       const nextTermIndex = 7;
       const positionIndex = 62;
       const remarksIndex = 63;
+      const bmIndex = 64; // Column BM
+      
+      // Determine the correct label based on the form
+      let aggregateLabel = '';
+      if (form.includes('Form1') || form.includes('Form2')) {
+        aggregateLabel = 'Aggregate grade';
+      } else {
+        aggregateLabel = 'Aggregate points';
+      }
       
       const subjects = ['AGRI', 'BIBLE', 'BIO', 'CHE', 'CHI', 'HFC', 'ENG', 'HIS', 'GEO', 'S/LF', 'MAT', 'PHY', 'COM'];
       const schoolName = form.includes('ODL') ? 'MCHINJI SECONDARY SCHOOL ODL' : 'MCHINJI SECONDARY SCHOOL';
@@ -107,6 +118,8 @@ async function fillReportCard(form, examNo, password) {
             </div>
             <div style="flex: 1; min-width: 200px; text-align: right;">
               <p style="margin: 2px 0;"><strong>POSITION IN CLASS:</strong> ${cols[positionIndex] || '-'}</p>
+              <!-- ADDED: The dynamic Aggregate Grade/Points element -->
+              <p style="margin: 2px 0;"><strong>${aggregateLabel}:</strong> ${cols[bmIndex] || '-'}</p>
               <p style="margin: 2px 0;"><strong>REMARKS:</strong> ${cols[remarksIndex] || '-'}</p>
             </div>
           </div>
