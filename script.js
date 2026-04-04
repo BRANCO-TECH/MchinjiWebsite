@@ -1,6 +1,3 @@
-
-
-
 let currentFormType = '';
 document.addEventListener('DOMContentLoaded', () => {
   const daySchoolBtn = document.getElementById('daySchoolBtn');
@@ -116,14 +113,7 @@ async function fillReportCard(form, examNo, password) {
 
       document.getElementById('downloadBtn').addEventListener('click', () => {
         const reportCard = document.querySelector('.card');
-        const opt = {
-          margin: 0.5,
-          filename: 'report_card.pdf',
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2 },
-          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
-        html2pdf().from(reportCard).set(opt).save();
+        html2pdf().from(reportCard).save('report_card.pdf');
       });
 
       found = true;
@@ -138,9 +128,6 @@ function checkResult() {
   const examNo = document.getElementById('examNo').value.trim();
   const password = document.getElementById('password').value.trim();
   fillReportCard(form, examNo, password);
-}
-function downloadPDF(){
-  html2pdf().from(document.getElementById('resultDisplay')).save('exam-results.pdf');
 }
 
 
