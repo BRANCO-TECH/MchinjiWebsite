@@ -1,8 +1,4 @@
-@media (max-width: 600px) {
-  body { font-size: 12px; }
-  h2 { font-size: 16px; }
-  table { font-size: 11px; }
-}
+
 .card {
   max-width: 800px;
   width: 100%;
@@ -13,7 +9,7 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   margin-bottom: 20px;
   overflow-x: auto;
-   text-align: center !important;
+  text-align: center !important;
   font-family: Arial, sans-serif;
   display: flex;
   flex-direction: column;
@@ -38,11 +34,9 @@ th, td {
   border-radius: 5px;
   cursor: pointer;
 }
-.green-btn:hover {background-color: #3e8e41;
-}
+.green-btn:hover {background-color: #3e8e41; }
 .logo{
   align-self: center;
   width: 100px;
 }
-
 

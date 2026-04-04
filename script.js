@@ -1,12 +1,11 @@
 
 
-let currentFormType = '';
 
+let currentFormType = '';
 document.addEventListener('DOMContentLoaded', () => {
   const daySchoolBtn = document.getElementById('daySchoolBtn');
   const odlBtn = document.getElementById('odlBtn');
   const checkResultBtn = document.getElementById('checkResultBtn');
-
   if (daySchoolBtn && odlBtn && checkResultBtn) {
     daySchoolBtn.addEventListener('click', showDaySchoolOptions);
     odlBtn.addEventListener('click', showODLOptions);
@@ -73,6 +72,7 @@ async function fillReportCard(form, examNo, password) {
       const subjects = ['AGRI', 'BIBLE', 'BIO', 'CHE', 'CHI', 'HFC', 'ENG', 'HIS', 'GEO', 'S/LF', 'MAT', 'PHY', 'COM'];
       const schoolName = form.includes('ODL') ? 'MCHINJI SECONDARY SCHOOL ODL' : 'MCHINJI SECONDARY SCHOOL';
       let html = `
+        <h2>Your examination results</h2>
         <div class="card">
           <div style="text-align: center;">
             <h2>REPORT CARD</h2>
@@ -109,8 +109,23 @@ async function fillReportCard(form, examNo, password) {
           <p><strong>BANK DETAILS FOR FEES PAYMENT:</strong> ${cols[bankDetailsIndex]}</p>
           <p><strong>NEXT TERM OPENS ON:</strong> ${cols[nextTermIndex]}</p>
         </div>
+        <button id="downloadBtn" class="green-btn">Download Report Card</button>
       `;
       document.getElementById('result').innerHTML = html;
+      document.getElementById('options').style.display = 'none';
+
+      document.getElementById('downloadBtn').addEventListener('click', () => {
+        const reportCard = document.querySelector('.card');
+        const opt = {
+          margin: 0.5,
+          filename: 'report_card.pdf',
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().from(reportCard).set(opt).save();
+      });
+
       found = true;
       return;
     }
@@ -124,3 +139,6 @@ function checkResult() {
   const password = document.getElementById('password').value.trim();
   fillReportCard(form, examNo, password);
 }
+
+
+
