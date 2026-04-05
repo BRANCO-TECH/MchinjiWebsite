@@ -101,7 +101,7 @@ async function fillReportCard(form, examNo, password) {
       const subjects = ['AGRI', 'BIBLE', 'BIO', 'CHE', 'CHI', 'HFC', 'ENG', 'HIS', 'GEO', 'S/LF', 'MAT', 'PHY', 'COM'];
       const schoolName = form.includes('ODL') ? 'MCHINJI SECONDARY SCHOOL ODL' : 'MCHINJI SECONDARY SCHOOL';
       
-      // UPDATE: Check if ODL to change Headteacher to Coordinator
+      // Check if ODL to change Headteacher to Coordinator
       const roleLabel = form.includes('ODL') ? 'COORDINATOR' : 'HEADTEACHER';
       
       let html = `
@@ -150,7 +150,7 @@ async function fillReportCard(form, examNo, password) {
             </table>
           </div>
           
-          <!-- UPDATED SECTION: Reordered items and dynamic label for ODL -->
+          <!-- Reordered items and dynamic label for ODL -->
           <div style="text-align: left; font-size: 12px; margin-top: 10px;">
             <p style="margin: 2px 0;"><strong>GRADING SYSTEM:</strong> ${cols[gradingSystemIndex] || '-'}</p>
             <p style="margin: 2px 0;"><strong>${roleLabel}:</strong> ${cols[headTeacherIndex] || '-'}</p>
@@ -167,8 +167,18 @@ async function fillReportCard(form, examNo, password) {
       document.getElementById('options').style.display = 'none';
 
       document.getElementById('downloadBtn').addEventListener('click', () => {
-        const reportCard = document.querySelector('.report-card-inner');
-        html2pdf().from(reportCard).save('report_card.pdf');
+        const element = document.querySelector('.report-card-inner');
+        
+        // UPDATED: Configuration to make PDF larger and sharper on one page
+        const opt = {
+          margin:       [10, 10, 10, 10], // Top, Left, Bottom, Right (in mm). Smaller margins = more room.
+          filename:     'report_card.pdf',
+          image:        { type: 'jpeg', quality: 0.98 },
+          html2canvas:  { scale: 2, useCORS: true }, // Scale 2 makes text/elements larger and clearer
+          jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        html2pdf().set(opt).from(element).save();
       });
 
       found = true;
