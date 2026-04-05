@@ -72,8 +72,8 @@ async function fillReportCard(form, examNo, password) {
   
   for (let row of data.slice(2)) {
     const cols = row;
-    // Updated to < 66 to account for the new Column BN (Index 65)
-    if (cols.length < 66) continue;
+    // Updated to < 67 to account for the new Column BO (Index 66)
+    if (cols.length < 67) continue;
     
     if (cols[1]?.trim() === examNo.trim() && password === "123456") {
       const nameIndex = 9;
@@ -86,7 +86,8 @@ async function fillReportCard(form, examNo, password) {
       const positionIndex = 62;
       const remarksIndex = 63;
       const bmIndex = 64; 
-      const uniformIndex = 65; // Added Column BN
+      const uniformIndex = 65; // Column BN
+      const gradingSystemIndex = 66; // Column BO
       
       let aggregateLabel = '';
       if (form.includes('Form1') || form.includes('Form2')) {
@@ -148,6 +149,7 @@ async function fillReportCard(form, examNo, password) {
           <!-- Increased bottom font-size to 12px -->
           <div style="text-align: left; font-size: 12px; margin-top: 10px;">
             <p style="margin: 2px 0;"><strong>UNIFORM:</strong> ${cols[uniformIndex] || '-'}</p>
+            <p style="margin: 2px 0;"><strong>GRADING SYSTEM:</strong> ${cols[gradingSystemIndex] || '-'}</p>
             <p style="margin: 2px 0;"><strong>HEADTEACHER:</strong> ${cols[headTeacherIndex] || '-'}</p>
             <p style="margin: 2px 0;"><strong>BANK DETAILS:</strong> ${cols[bankDetailsIndex] || '-'}</p>
             <p style="margin: 2px 0;"><strong>NEXT TERM OPENS:</strong> ${cols[nextTermIndex] || '-'}</p>
