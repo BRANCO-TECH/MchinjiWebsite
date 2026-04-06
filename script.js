@@ -75,8 +75,7 @@ async function fillReportCard(form, examNo, password) {
     
     if (cols.length < 50) continue;
     
-    // FIX 1: CASE INSENSITIVE CHECK
-    // Converts both the CSV value and User Input to lowercase for comparison
+    // FIX 1: CASE INSENSITIVE CHECK (Exam No)
     if (cols[0]?.trim().toLowerCase() === examNo.trim().toLowerCase() && cols[14]?.trim() === password.trim()) {
       const nameIndex = 2; 
       const formIndex = 3; 
@@ -123,27 +122,27 @@ async function fillReportCard(form, examNo, password) {
             </div>
           </div>
 
-          <!-- FIX 2: CHANGED overflow-x TO auto FOR SCROLLING ON PHONES -->
+          <!-- FIX 2: OPTIMIZED TABLE FOR MOBILE -->
           <div style="overflow-x: auto; width: 100%;">
-            <!-- FIX 2: REDUCED FONT TO 10px, ADDED word-break, SET COLUMN WIDTHS -->
             <table border="1" style="width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 10px;">
               <tr>
-                <th style="padding: 4px 2px; width: 30%;">SUBJECT</th>
-                <th style="padding: 4px 2px; width: 25%;">AGGREGATE (%)</th>
-                <th style="padding: 4px 2px; width: 15%;">GRADE</th>
-                <th style="padding: 4px 2px; width: 15%;">POSITION</th>
-                <th style="padding: 4px 2px; width: 15%;">REMARKS</th>
+                <!-- Adjusted widths to prioritize Subject and Remarks -->
+                <th style="padding: 4px 2px; width: 25%; word-wrap: break-word;">SUBJECT</th>
+                <th style="padding: 4px 2px; width: 20%; word-wrap: break-word;">AGGREGATE (%)</th>
+                <th style="padding: 4px 2px; width: 15%; word-wrap: break-word;">GRADE</th>
+                <th style="padding: 4px 2px; width: 15%; word-wrap: break-word;">POSITION</th>
+                <th style="padding: 4px 2px; width: 25%; word-wrap: break-word;">REMARKS</th>
               </tr>
               ${subjects.map((subject, i) => {
                 const baseIndex = 15 + (i * 4);
                 return `
                   <tr>
-                    <!-- FIX 2: ADDED word-break: break-word TO PREVENT OVERFLOW -->
-                    <td style="padding: 3px 2px; text-align: left; padding-left: 4px; word-break: break-word;">${subject}</td>
-                    <td style="padding: 3px 2px; word-break: break-word;">${cols[baseIndex] || '-'}</td>
-                    <td style="padding: 3px 2px; word-break: break-word;">${cols[baseIndex + 1] || '-'}</td>
-                    <td style="padding: 3px 2px; word-break: break-word;">${cols[baseIndex + 2] || '-'}</td>
-                    <td style="padding: 3px 2px; word-break: break-word;">${cols[baseIndex + 3] || '-'}</td>
+                    <!-- FIX 3: FORCED TEXT WRAPPING AND REDUCED PADDING -->
+                    <td style="padding: 2px 1px; text-align: left; padding-left: 4px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">${subject}</td>
+                    <td style="padding: 2px 1px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">${cols[baseIndex] || '-'}</td>
+                    <td style="padding: 2px 1px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">${cols[baseIndex + 1] || '-'}</td>
+                    <td style="padding: 2px 1px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">${cols[baseIndex + 2] || '-'}</td>
+                    <td style="padding: 2px 1px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">${cols[baseIndex + 3] || '-'}</td>
                   </tr>
                 `;
               }).join('')}
