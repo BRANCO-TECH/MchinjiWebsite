@@ -98,7 +98,7 @@ async function fillReportCard(form, examNo, password) {
         aggregateLabel = 'Aggregate Points';
       }
       
-      const subjects = ['AGRI', 'BIBLE', 'BIO', 'CHE', 'CHI', 'HFC', 'ENG', 'HIS', 'GEO', 'S/LF', 'MAT', 'PHY', 'COM'];
+      const subjects = ['AGRI', 'BIBLE', 'BIO', 'CHE', 'CHI', 'HEC', 'ENG', 'HIS', 'GEO', 'S/LF', 'MAT', 'PHY', 'COM'];
       const schoolName = form.includes('ODL') ? 'MCHINJI SECONDARY SCHOOL ODL' : 'MCHINJI SECONDARY SCHOOL';
       
       // Check if ODL to change Headteacher to Coordinator
